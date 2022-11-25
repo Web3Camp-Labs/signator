@@ -1,6 +1,10 @@
 import {Button, Card, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
 import React, {ChangeEvent, useState} from "react";
 import styled from "styled-components";
+import {useWeb3} from "../api/connect";
+import { ethers } from  'ethers';
+
+
 const ContentBox = styled(Container)`
     margin: 40px auto;
 `
@@ -14,6 +18,7 @@ const CardBox = styled(Card)`
 const CenterBox = styled.div`
     display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 40px;
   .textareaBox{
     height: 200px;
@@ -27,12 +32,58 @@ const GrayBox = styled.div`
   border-radius: 6px;
 `
 
+const BtnBr = styled(Button)`
+    margin-left: 20px;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000000;
+`
+
 export default function Main(){
-    const [address,setAddress] = useState('');
+    const {state} = useWeb3();
+    const { web3Provider,account } = state;
+
+    const [message,setMessage] = useState('');
+    const [signature,setSignature] = useState('');
+    const [hashMessage,setHashMessage] = useState('hashMessage');
+
     const handleInput = (e:ChangeEvent) => {
-        const { value } = e.target as HTMLInputElement;
-        setAddress(value);
+        const { name,value } = e.target as HTMLInputElement;
+
+        switch (name){
+            case 'message':
+                setMessage(value);
+                break;
+            case 'hashMessage':
+                console.log(value)
+                if(value==='hashMessage'){
+                    setHashMessage('');
+                }else{
+                    setHashMessage('hashMessage');
+                }
+
+                break;
+        }
     }
+
+    const signMessage = async() => {
+        setSignature('');
+
+        let msg;
+        if (hashMessage) {
+            msg = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(message));
+        }else{
+            msg = message;
+        }
+        const _signature = await web3Provider.send("personal_sign", [msg, account]);
+        setSignature(_signature)
+    };
+
+    const addTime = () =>{
+        const _date = new Date();
+        setMessage(`${_date.toLocaleString()}: ${message}`);
+    }
+
 
     return <ContentBox>
         <Row>
@@ -47,21 +98,32 @@ export default function Main(){
                             <Form.Control
                                 as="textarea"
                                 className="textareaBox"
-                                name='token'
+                                name='message'
                                 placeholder="Message"
-                                value={address}
+                                value={message}
                                 onChange={(e)=>handleInput(e)}
                             />
                         </FloatingLabel>
                     </Col>
                 </CenterBox>
                 <CenterBox>
-                    <Button variant="flat">Sign</Button>
+                    <Form.Check
+                        type='checkbox'
+                        label='Hash message'
+                        name='hashMessage'
+                        checked={hashMessage==='hashMessage'}
+                        value={hashMessage}
+                        onChange={(e)=>handleInput(e)}
+                    />
+                    <BtnBr variant="flat" onClick={()=>addTime()}>Add time</BtnBr>
+                </CenterBox>
+                <CenterBox>
+                    <Button variant="flat" onClick={()=>signMessage()}>Sign</Button>
                 </CenterBox>
                 <CenterBox>
                     <Col  md={8} xs={12}>
                         <GrayBox>
-                            dd
+                            {signature}
                         </GrayBox>
                     </Col>
                 </CenterBox>
