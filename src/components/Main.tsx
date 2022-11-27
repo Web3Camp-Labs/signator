@@ -23,6 +23,9 @@ const CenterBox = styled.div`
   .textareaBox{
     height: 200px;
   }
+  .li{
+    margin-right: 20px;
+  }
 `
 
 const GrayBox = styled.div`
@@ -43,19 +46,51 @@ export default function Main(){
     const {state} = useWeb3();
     const { web3Provider,account } = state;
 
-    const [message,setMessage] = useState('');
+    const [message,setMessage] = useState<any>('');
+    const [type,setType] = useState('message');
     const [signature,setSignature] = useState('');
     const [hashMessage,setHashMessage] = useState('hashMessage');
 
+    const eip712Example = {
+        types: {
+            Greeting: [
+                {
+                    name: "salutation",
+                    type: "string",
+                },
+                {
+                    name: "target",
+                    type: "string",
+                },
+                {
+                    name: "born",
+                    type: "int32",
+                },
+            ],
+        },
+        message: {
+            salutation: "Hello",
+            target: "Ethereum",
+            born: 2015,
+        },
+    };
+
+
     const handleInput = (e:ChangeEvent) => {
         const { name,value } = e.target as HTMLInputElement;
-
         switch (name){
             case 'message':
                 setMessage(value);
                 break;
+            case 'type':
+                setType(value);
+                if(value === 'typedData'){
+                    setMessage(JSON.stringify(eip712Example,null,4))
+                }else{
+                    setMessage('')
+                }
+                break;
             case 'hashMessage':
-                console.log(value)
                 if(value==='hashMessage'){
                     setHashMessage('');
                 }else{
@@ -84,6 +119,16 @@ export default function Main(){
         setMessage(`${_date.toLocaleString()}: ${message}`);
     }
 
+    const isJSON = (str:string) =>{
+        try {
+            JSON.parse(str);
+            return true;
+
+        } catch(e) {
+            return false;
+        }
+
+    }
 
     return <ContentBox>
         <Row>
@@ -107,16 +152,47 @@ export default function Main(){
                     </Col>
                 </CenterBox>
                 <CenterBox>
-                    <Form.Check
-                        type='checkbox'
-                        label='Hash message'
-                        name='hashMessage'
-                        checked={hashMessage==='hashMessage'}
-                        value={hashMessage}
-                        onChange={(e)=>handleInput(e)}
-                    />
-                    <BtnBr variant="flat" onClick={()=>addTime()}>Add time</BtnBr>
+                    <div className="li">
+                        <Form.Check
+                            type='radio'
+                            label='Message'
+                            name='type'
+                            checked={type==='message'}
+                            value='message'
+                            onChange={(e)=>handleInput(e)}
+                        />
+                    </div>
+                    <div className="li">
+                        <Form.Check
+                            type='radio'
+                            label='Typed Data'
+                            name='type'
+                            checked={type==='typedData'}
+                            value='typedData'
+                            onChange={(e)=>handleInput(e)}
+                        />
+                    </div>
+
                 </CenterBox>
+                {
+                    type === 'message' && <CenterBox>
+                        <Form.Check
+                            type='checkbox'
+                            label='Hash message'
+                            name='hashMessage'
+                            checked={hashMessage==='hashMessage'}
+                            value={hashMessage}
+                            onChange={(e)=>handleInput(e)}
+                        />
+                        <BtnBr variant="flat" onClick={()=>addTime()}>Add time</BtnBr>
+                    </CenterBox>
+                }
+                <CenterBox>
+                    {
+                        !isJSON(message) && <div>Invalid Json</div>
+                    }
+                </CenterBox>
+
                 <CenterBox>
                     <Button variant="flat" onClick={()=>signMessage()}>Sign</Button>
                 </CenterBox>
