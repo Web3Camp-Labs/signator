@@ -114,6 +114,7 @@ export default function HeaderTop() {
         if(account == null){
             dispatch({type: ActionType.SET_ACCOUNT,payload:logInfo});
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const logout = () =>{
