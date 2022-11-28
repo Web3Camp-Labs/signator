@@ -3,7 +3,7 @@ import React, {ChangeEvent, useState} from "react";
 import styled from "styled-components";
 import {useWeb3} from "../api/connect";
 import { ethers } from  'ethers';
-
+import chainJSON  from "../api/chains.json";
 
 const ContentBox = styled(Container)`
     margin: 40px auto;
@@ -19,7 +19,7 @@ const CenterBox = styled.div`
     display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   .textareaBox{
     height: 200px;
   }
@@ -85,9 +85,11 @@ export default function Main(){
             case 'type':
                 setType(value);
                 if(value === 'typedData'){
-                    setMessage(JSON.stringify(eip712Example,null,4))
+                    setMessage(JSON.stringify(eip712Example,null,4));
+                    setSignature('');
                 }else{
-                    setMessage('')
+                    setSignature('');
+                    setMessage('');
                 }
                 break;
             case 'hashMessage':
@@ -104,14 +106,36 @@ export default function Main(){
     const signMessage = async() => {
         setSignature('');
 
-        let msg;
-        if (hashMessage) {
-            msg = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(message));
+        if(type === 'message'){
+            let msg;
+            if (hashMessage) {
+                msg = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(message));
+            }else{
+                msg = message;
+            }
+            const _signature = await web3Provider.send("personal_sign", [msg, account]);
+            setSignature(_signature);
         }else{
-            msg = message;
+            let signer = web3Provider.getSigner(account);
+            const { chainId }= await web3Provider.getNetwork();
+            const chainObj = chainJSON.filter(i=>i.chainId === chainId);
+            const messageObj = JSON.parse(message);
+            console.log(chainObj[0].chainId)
+            let domain = {
+                name:chainObj[0].name,
+                chainId:chainObj[0].chainId
+            }
+            if(chainObj[0] && messageObj){
+                const _signature = await signer._signTypedData(domain, messageObj.types, messageObj.message);
+                setSignature(_signature);
+            }
         }
-        const _signature = await web3Provider.send("personal_sign", [msg, account]);
-        setSignature(_signature)
+
+
+
+
+
+
     };
 
     const addTime = () =>{
@@ -128,6 +152,15 @@ export default function Main(){
             return false;
         }
 
+    }
+
+    const prettify = () =>{
+        let beforeStr = JSON.parse(message);
+        setMessage(JSON.stringify(beforeStr,null,4))
+    }
+
+    const reset = () =>{
+        setMessage(JSON.stringify(eip712Example,null,4))
     }
 
     return <ContentBox>
@@ -187,14 +220,22 @@ export default function Main(){
                         <BtnBr variant="flat" onClick={()=>addTime()}>Add time</BtnBr>
                     </CenterBox>
                 }
+                {
+
+                }
+                <CenterBox>
+                    <BtnBr variant="flat" onClick={()=>prettify()} disabled={!isJSON(message)}>Prettify</BtnBr>
+                    <BtnBr variant="flat" onClick={()=>reset()}>Reset</BtnBr>
+                </CenterBox>
                 <CenterBox>
                     {
-                        !isJSON(message) && <div>Invalid Json</div>
+                        !!message?.length &&!isJSON(message) && <div>Invalid Json</div>
                     }
                 </CenterBox>
 
+
                 <CenterBox>
-                    <Button variant="flat" onClick={()=>signMessage()}>Sign</Button>
+                    <Button variant="flat" onClick={()=>signMessage()} disabled={!isJSON(message)}>Sign</Button>
                 </CenterBox>
                 <CenterBox>
                     <Col  md={8} xs={12}>

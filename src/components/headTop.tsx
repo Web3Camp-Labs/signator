@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button,Dropdown } from 'react-bootstrap';
 import {ActionType} from "../api/types";
-import ChainJson from "../api/chain.json";
+import ChainJson from "../api/chains.json";
 import {X} from "react-bootstrap-icons"
 import Accounts from '../api/Account';
 import {useWeb3} from "../api/connect";
