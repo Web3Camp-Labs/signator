@@ -221,11 +221,18 @@ export default function Main(){
                     </CenterBox>
                 }
                 {
-                    type === 'typedData' &&<CenterBox>
-                        <BtnBr variant="flat" onClick={()=>prettify()} disabled={!isJSON(message)}>Prettify</BtnBr>
-                        <BtnBr variant="flat" onClick={()=>reset()}>Reset</BtnBr>
-                    </CenterBox>
+                    type === 'typedData' &&<>
+                        <CenterBox>
+                            <BtnBr variant="flat" onClick={()=>prettify()} disabled={!isJSON(message)}>Prettify</BtnBr>
+                            <BtnBr variant="flat" onClick={()=>reset()}>Reset</BtnBr>
+
+                        </CenterBox>
+                        <CenterBox>
+                            <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noreferrer">Learn more about signing typed data</a>
+                        </CenterBox>
+                    </>
                 }
+
 
                 <CenterBox>
                     {
