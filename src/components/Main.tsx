@@ -42,6 +42,10 @@ const BtnBr = styled(Button)`
   color: #000000;
 `
 
+const Alink = styled.a`
+    color: #000000;
+`
+
 export default function Main(){
     const {state} = useWeb3();
     const { web3Provider,account } = state;
@@ -228,7 +232,7 @@ export default function Main(){
 
                         </CenterBox>
                         <CenterBox>
-                            <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noreferrer">Learn more about signing typed data</a>
+                            <Alink href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noreferrer">Learn more about signing typed data</Alink>
                         </CenterBox>
                     </>
                 }
