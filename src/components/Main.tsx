@@ -221,12 +221,12 @@ export default function Main(){
                     </CenterBox>
                 }
                 {
-
+                    type === 'typedData' &&<CenterBox>
+                        <BtnBr variant="flat" onClick={()=>prettify()} disabled={!isJSON(message)}>Prettify</BtnBr>
+                        <BtnBr variant="flat" onClick={()=>reset()}>Reset</BtnBr>
+                    </CenterBox>
                 }
-                <CenterBox>
-                    <BtnBr variant="flat" onClick={()=>prettify()} disabled={!isJSON(message)}>Prettify</BtnBr>
-                    <BtnBr variant="flat" onClick={()=>reset()}>Reset</BtnBr>
-                </CenterBox>
+
                 <CenterBox>
                     {
                         !!message?.length &&!isJSON(message) && <div>Invalid Json</div>
