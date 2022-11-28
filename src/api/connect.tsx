@@ -1,4 +1,4 @@
-import {createContext, Dispatch, ReactElement, useContext, useReducer} from 'react';
+import {createContext, Dispatch, useContext, useReducer} from 'react';
 import {ethers} from "ethers";
 import reducer from './reducer';
 import INIT_STATE from './initState';

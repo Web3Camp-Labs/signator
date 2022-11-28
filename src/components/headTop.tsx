@@ -55,29 +55,13 @@ const ChainBox = styled(Dropdown)`
 const BoxRht = styled.div`
   position: relative;
 `
-interface obj{
-    name:string;
-    chain:string;
-    icon:string;
-    rpc: string[];
-    faucets: any[];
-    nativeCurrency:any;
-    infoURL:string;
-    shortName:string;
-    chainId:number;
-    networkId:number;
-    slip44:number;
-    ens:{
-        registry:string
-    }
-    explorers:any[];
-}
+
 
 export default function HeaderTop() {
     const {dispatch,state} = useWeb3();
     const { web3Provider,account } = state;
 
-    const [show, setShow] = useState<boolean>(false);
+    // const [show, setShow] = useState<boolean>(false);
     const [chainName ,setChainName] = useState('');
     useEffect(()=>{
         const getChain =  async() =>{
@@ -95,7 +79,7 @@ export default function HeaderTop() {
                 sessionStorage.setItem("account", data?.data);
                 dispatch({type: ActionType.SET_ACCOUNT,payload:data?.data});
             } else {
-                setShow(true)
+                // setShow(true)
             }
         });
     }
@@ -145,7 +129,6 @@ export default function HeaderTop() {
         <ContainerBox>
             <Row>
                 <Col className="headerTxt" md={4} xs={12}>
-                    {/*<img src="/multisender/multisender.png" alt="" className="logo"/>*/}
                     Signator
                 </Col>
                 <Col className="headetRht" md={8} xs={12}>
