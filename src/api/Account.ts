@@ -12,7 +12,8 @@ const accountList = async () => {
      }
 
 }
-
-export default {
-    accountList,
+const obj = {
+    accountList
 }
+
+export default obj
