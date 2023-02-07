@@ -6,7 +6,7 @@ import { ethers } from  'ethers';
 import chainJSON  from "../api/chains.json";
 
 const ContentBox = styled(Container)`
-    margin: 40px auto;
+    margin: 20px auto 40px;
 `
 const CardBox = styled(Card)`
   border:0;

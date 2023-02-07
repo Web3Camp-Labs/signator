@@ -5,6 +5,7 @@ import FooterBox from "./components/footerBox";
 import GlobalStyle from "./utils/GloablStyle";
 import {ContextProvider} from "./api/connect";
 import Main from "./components/Main";
+import Header2 from "./components/headT2";
 
 const MainContent = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ function App() {
           <div>
             <MainContent>
               <HeaderTop />
+              <Header2 />
                 <Main />
               <FooterBox />
             </MainContent>
