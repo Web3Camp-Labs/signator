@@ -1,5 +1,7 @@
 # Signator
 
+A simple app that lets you sign a message with an Ethereum account 
+
 ## Available Scripts
 
 In the project directory, you can run:
