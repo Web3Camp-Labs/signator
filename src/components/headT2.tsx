@@ -168,7 +168,7 @@ export default function HeaderTop() {
                     <BoxRht>
                         <Box>
                             {
-                                !!chainName.length && <ChainBox>
+                                !!chainName?.length && <ChainBox>
                                         {chainName}
                                 </ChainBox>
                             }
